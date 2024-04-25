@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require("bcrypt");
 //mongodb+srv://<username>:<password>@beyondthebasics.abcde.mongodb.net/db-name-here
-
-mongoose.connect('mongodb+srv://shubham:password1234@paytm.gbxkxis.mongodb.net/user', {
+const {MONGO_URI} = require('./config')
+mongoose.connect(MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
@@ -55,7 +55,22 @@ UserSchema.methods.validatePassword = async function (candidatePassword) {
   
 const User = new mongoose.model("User", UserSchema)
 
-module.exports = User;
+
+const AccountSchema = new mongoose.Schema({ 
+    userId: { 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', 
+        require: true
+    }, 
+    balance: { 
+        type: Number, 
+        require: true
+    }
+}) 
+const Accounts = new mongoose.model("Accounts", AccountSchema)
+
+
+module.exports = {User , Accounts};
 
 
 // const User_1 = new User({ 

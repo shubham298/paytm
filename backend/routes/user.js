@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const { ObjectId } = require("mongodb");
 const router = express.Router();
 //User
-const User = require("../db");
+const {User, Accounts} = require("../db");
 const { validateData } = require("../middleware/validationMiddleware");
 const { authMiddleware } = require("../middleware/authMiddelware");
 const {
@@ -12,7 +12,9 @@ const {
   userUpdateSchema,
 } = require("../zodSchema/userSchema");
 const jwt = require("jsonwebtoken");
-const constant = require("../config");
+
+const {JWT_SECRET} = require('../config')
+
 
 router.post(
   "/signup",
@@ -39,8 +41,12 @@ router.post(
         const userId = result._id;
 
         //token generation
-        console.log("userId", userId.toString());
-        const token = jwt.sign(userId.toString(), constant.JWT_SECRET);
+        const newAccount = new Accounts({
+          userId : userId,
+          balance : Math.floor(Math.random() * 10000) + 1
+        })
+        await newAccount.save()
+        const token = jwt.sign(userId.toString(), JWT_SECRET);
         res.json({
           message: "User created successfully",
           token: token,
