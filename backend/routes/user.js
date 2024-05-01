@@ -24,7 +24,7 @@ router.post(
       const isUserPresent = await User.findOne({ userName: req.body.userName });
       console.log("isUserPresent", isUserPresent);
       if (isUserPresent) {
-        return res.json({
+        return res.status(400).json({
           message: "User already present",
         });
       } else {
@@ -115,8 +115,7 @@ router.post(
       if (result) {
         res.json({ message: "User updated", data: result });
       } else {
-        console.log("useruser", result);
-        res.json({ message: "Invalid user", data: user });
+        res.json({ message: "Invalid user", data: {} });
       }
     } catch (error) {
       console.log("error", error);
